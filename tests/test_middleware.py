@@ -1,16 +1,18 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from django_sqlite_tenant.middleware import (
     TenantDatabaseMiddleware,
     get_current_user_id,
 )
 
+_PATCH = "django_sqlite_tenant.middleware.get_or_create_user_db"
+
 
 def test_get_current_user_id_default():
     assert get_current_user_id() is None
 
 
-def test_middleware_sets_user_id(db):
+def test_middleware_sets_user_id():
     user = MagicMock()
     user.id = 7
     user.is_authenticated = True
@@ -26,14 +28,15 @@ def test_middleware_sets_user_id(db):
         responses.append(get_current_user_id())
         return MagicMock()
 
-    middleware = TenantDatabaseMiddleware(get_response)
-    middleware(request)
+    with patch(_PATCH):
+        middleware = TenantDatabaseMiddleware(get_response)
+        middleware(request)
 
     assert responses == [7]
     assert get_current_user_id() is None
 
 
-def test_middleware_clears_user_id_after_request(db):
+def test_middleware_clears_user_id_after_request():
     user = MagicMock()
     user.id = 42
     user.is_authenticated = True
@@ -46,7 +49,9 @@ def test_middleware_clears_user_id_after_request(db):
     def get_response(req):
         return MagicMock()
 
-    TenantDatabaseMiddleware(get_response)(request)
+    with patch(_PATCH):
+        TenantDatabaseMiddleware(get_response)(request)
+
     assert get_current_user_id() is None
 
 
@@ -64,5 +69,7 @@ def test_middleware_anonymous_user():
         captured.append(get_current_user_id())
         return MagicMock()
 
-    TenantDatabaseMiddleware(get_response)(request)
+    with patch(_PATCH):
+        TenantDatabaseMiddleware(get_response)(request)
+
     assert captured == [None]
