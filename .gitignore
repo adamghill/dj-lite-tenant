@@ -9,3 +9,5 @@ build/
 db/
 .pytest_cache/
 .ruff_cache/
+.coverage
+tests/testapp/migrations/0001_initial.py
