@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>My Notes <small style="font-size:.6em">(stored in your private DB)</small></h2>
+<a href="{% url 'note_add' %}">+ Add note</a>
+{% if notes %}
+  <ul>
+    {% for note in notes %}
+      <li>
+        {{ note.text }} - ({{ note.user.username }})
+        <form method="post" action="{% url 'note_delete' note.pk %}" style="display:inline">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Delete?')">x</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No notes yet.</p>
+{% endif %}
+{% endblock %}

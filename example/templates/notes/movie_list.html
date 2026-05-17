@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Catalog Movies <small style="font-size:.6em">(shared default DB)</small></h2>
+{% if movies %}
+  <ul>
+    {% for movie in movies %}
+      <li>{{ movie }}</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No movies in the catalog. Add some via <a href="{% url 'admin:catalog_movie_changelist' %}">Admin</a>.</p>
+{% endif %}
+{% endblock %}

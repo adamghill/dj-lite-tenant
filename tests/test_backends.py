@@ -1,5 +1,6 @@
-from django_sqlite_tenant.backends.sqlite3.operations import DatabaseOperations
 from unittest.mock import MagicMock
+
+from dj_lite_tenant.backends.sqlite3.operations import DatabaseOperations
 
 
 def _make_ops():
