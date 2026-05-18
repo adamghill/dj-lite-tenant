@@ -29,7 +29,7 @@ Issues = "https://github.com/adamghill/dj-lite-tenant/issues"
 src = ["src"]
 target-version = "py311"
 line-length = 120
-exclude = ["**/migrations/*"]
+exclude = ["**/migrations/*", "example/**/*", "tests/**/*"]
 
 [tool.ruff.lint]
 select = [

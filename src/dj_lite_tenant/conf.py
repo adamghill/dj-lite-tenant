@@ -1,5 +1,6 @@
 from django.apps import apps
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
 from django.utils.module_loading import import_string
@@ -63,8 +64,6 @@ def get_tenant_model() -> type[Model]:
     - None (default) — returns Django's active user model via get_user_model().
     - A 'app_label.ModelName' string — resolved via apps.get_model().
     """
-
-    from django.contrib.auth import get_user_model
 
     value = get_conf("TENANT_MODEL")
 

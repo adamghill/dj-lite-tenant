@@ -10,9 +10,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("tenant_pk", help="Primary key of the tenant")
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options):  # noqa: ARG002
         tenant_pk = str(options["tenant_pk"])
-        TenantModel = get_tenant_model()
+        TenantModel = get_tenant_model()  # noqa: N806
 
         try:
             TenantModel.objects.get(pk=tenant_pk)

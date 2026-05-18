@@ -28,8 +28,8 @@ def remove(alias: str) -> None:
 
 
 def _close_alias(alias: str) -> None:
-    from django.conf import settings
-    from django.db import connections
+    from django.conf import settings  # noqa: PLC0415
+    from django.db import connections  # noqa: PLC0415
 
     if alias in connections:
         connections[alias].close()

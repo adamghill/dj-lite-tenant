@@ -11,7 +11,7 @@ class TenantDatabaseRouter:
     All other models fall through to 'default'.
     """
 
-    def db_for_read(self, model, **hints):
+    def db_for_read(self, model, **hints):  # noqa: ARG002
         if is_tenant_app_or_model(model._meta.app_label, model._meta.model_name):
             tenant_pk = get_current_tenant_pk()
 
@@ -22,7 +22,7 @@ class TenantDatabaseRouter:
 
         return "default"
 
-    def db_for_write(self, model, **hints):
+    def db_for_write(self, model, **hints):  # noqa: ARG002
         if is_tenant_app_or_model(model._meta.app_label, model._meta.model_name):
             tenant_pk = get_current_tenant_pk()
 
@@ -33,14 +33,14 @@ class TenantDatabaseRouter:
 
         return "default"
 
-    def allow_relation(self, obj1, obj2, **hints):
+    def allow_relation(self, obj1, obj2, **hints):  # noqa: ARG002
         # Always permit. Tenant↔shared relations are valid because every tenant
         # DB has the shared DB ATTACHed to it. We cannot detect cross-tenant
         # pairs here (objects carry no DB alias), so blanket-allow and rely on
         # application code to never form cross-tenant relations.
         return True
 
-    def allow_migrate(self, db, app_label, model_name=None, **hints):
+    def allow_migrate(self, db, app_label, model_name=None, **hints):  # noqa: ARG002
         if model_name is not None:
             try:
                 model = apps.get_model(app_label, model_name)

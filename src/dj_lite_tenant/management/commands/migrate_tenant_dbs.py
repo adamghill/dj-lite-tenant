@@ -28,7 +28,7 @@ def _build_tenant_db_re() -> re.Pattern:
 class Command(BaseCommand):
     help = "Apply migrations to all existing per-tenant SQLite databases."
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options):  # noqa: ARG002
         db_dir = Path(get_conf("DIR"))
 
         if not db_dir.is_dir():

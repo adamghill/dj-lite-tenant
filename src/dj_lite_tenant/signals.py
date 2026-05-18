@@ -17,13 +17,13 @@ from dj_lite_tenant.utils import (
 logger = logging.getLogger(__name__)
 
 
-def create_tenant_database(sender, instance, created, **kwargs):
+def create_tenant_database(sender, instance, created, **kwargs):  # noqa: ARG001
     """Create and migrate a per-tenant SQLite DB when a new tenant instance is saved."""
     if created:
         setup_tenant_db(str(instance.pk))
 
 
-def delete_tenant_database(sender, instance, **kwargs):
+def delete_tenant_database(sender, instance, **kwargs):  # noqa: ARG001
     """
     Delete the tenant's DB file when the tenant is deleted.
 
@@ -51,7 +51,7 @@ def delete_tenant_database(sender, instance, **kwargs):
 
 
 @receiver(connection_created)
-def on_connection_created(sender, connection, **kwargs):
+def on_connection_created(sender, connection, **kwargs):  # noqa: ARG001
     """
     When a per-user DB connection is opened, ATTACH the catalog DB so that
     raw SQL and ORM dot-schema queries (catalog.tablename) work seamlessly.
@@ -64,7 +64,7 @@ def on_connection_created(sender, connection, **kwargs):
 
 
 @receiver(post_migrate)
-def invalidate_template_cache(sender, **kwargs):
+def invalidate_template_cache(sender, **kwargs):  # noqa: ARG001
     """Clear the template cache when migrations are applied to tenant apps."""
     if is_tenant_app_or_model(sender.label):
         clear_template_cache()
