@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 from dj_lite_tenant.conf import get_conf, is_tenant_app_or_model
 from dj_lite_tenant.utils import (
-    attach_catalog_to_connection,
+    attach_shared_databases,
     clear_template_cache,
     delete_tenant_db,
     get_tenant_db_path,
@@ -55,15 +55,15 @@ def delete_tenant_database(sender, instance, **kwargs):  # noqa: ARG001
 @receiver(connection_created)
 def on_connection_created(sender, connection, **kwargs):  # noqa: ARG001
     """
-    When a per-user DB connection is opened, ATTACH the catalog DB so that
-    raw SQL and ORM dot-schema queries (catalog.tablename) work seamlessly.
+    When a per-user DB connection is opened, ATTACH the shared DB(s) so that
+    raw SQL and ORM dot-schema queries work seamlessly.
     """
 
     if is_tenant_db_alias(connection.alias):
         try:
-            attach_catalog_to_connection(connection)
+            attach_shared_databases(connection)
         except Exception:
-            logger.exception("Could not ATTACH catalog to %s", connection.alias)
+            logger.exception("Could not attach shared databases to %s", connection.alias)
 
 
 @receiver(post_migrate)

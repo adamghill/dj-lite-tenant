@@ -199,7 +199,7 @@ def get_attach_statements() -> list[str]:
     return statements
 
 
-def attach_catalog_to_connection(connection) -> None:
+def attach_shared_databases(connection) -> None:
     """
     Runs ATTACH DATABASE on a newly opened user DB connection so that raw SQL
     can reference shared.tablename, and the ORM can use Meta.db_table = "shared.x".
