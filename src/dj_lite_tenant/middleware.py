@@ -13,6 +13,7 @@ def get_current_tenant_pk() -> str | None:
 
 def get_tenant_pk_from_request(request) -> str | None:
     """Default TENANT_ID_CALLABLE: returns the tenant pk string for the current request."""
+
     if not hasattr(request, "user") or not request.user.is_authenticated:
         return None
 
@@ -25,6 +26,7 @@ def get_tenant_pk_from_request(request) -> str | None:
 @contextmanager
 def tenant_db(obj):
     """Context manager for out-of-request use: sets the current tenant and opens their DB."""
+
     tenant_pk = str(obj.pk)
     token = _current_tenant_pk.set(tenant_pk)
     get_or_create_tenant_db(tenant_pk)

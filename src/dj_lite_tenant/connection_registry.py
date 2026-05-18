@@ -8,6 +8,7 @@ _registry: OrderedDict[str, float] = OrderedDict()  # alias -> last_access monot
 
 def touch(alias: str) -> None:
     """Mark alias as recently used."""
+
     with _lock:
         _registry[alias] = time.monotonic()
         _registry.move_to_end(alias)
@@ -15,6 +16,7 @@ def touch(alias: str) -> None:
 
 def evict_if_needed(max_connections: int) -> None:
     """Evict least-recently-used aliases when over the limit."""
+
     with _lock:
         while len(_registry) > max_connections:
             alias, _ = _registry.popitem(last=False)  # LRU = first item
@@ -23,6 +25,7 @@ def evict_if_needed(max_connections: int) -> None:
 
 def remove(alias: str) -> None:
     """Remove an alias from the registry without closing (caller handles close)."""
+
     with _lock:
         _registry.pop(alias, None)
 

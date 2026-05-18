@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 def create_tenant_database(sender, instance, created, **kwargs):  # noqa: ARG001
     """Create and migrate a per-tenant SQLite DB when a new tenant instance is saved."""
+
     if created:
         setup_tenant_db(str(instance.pk))
 
@@ -30,6 +31,7 @@ def delete_tenant_database(sender, instance, **kwargs):  # noqa: ARG001
     Only runs if DELETE_TENANT_DB_ON_DELETE is True.
     Otherwise, logs a warning that the DB file was left behind.
     """
+
     tenant_pk = str(instance.pk)
 
     if get_conf("DELETE_TENANT_DB_ON_DELETE"):
@@ -56,6 +58,7 @@ def on_connection_created(sender, connection, **kwargs):  # noqa: ARG001
     When a per-user DB connection is opened, ATTACH the catalog DB so that
     raw SQL and ORM dot-schema queries (catalog.tablename) work seamlessly.
     """
+
     if is_tenant_db_alias(connection.alias):
         try:
             attach_catalog_to_connection(connection)
@@ -66,5 +69,6 @@ def on_connection_created(sender, connection, **kwargs):  # noqa: ARG001
 @receiver(post_migrate)
 def invalidate_template_cache(sender, **kwargs):  # noqa: ARG001
     """Clear the template cache when migrations are applied to tenant apps."""
+
     if is_tenant_app_or_model(sender.label):
         clear_template_cache()

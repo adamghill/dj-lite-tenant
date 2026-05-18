@@ -20,6 +20,7 @@ _template_lock = threading.Lock()
 
 def _safe_tenant_pk(tenant_pk: str) -> str:
     """Sanitise a tenant PK for use in DB aliases and filenames."""
+
     return slugify(str(tenant_pk), allow_unicode=False)
 
 
@@ -33,6 +34,7 @@ def is_tenant_db_alias(alias: str) -> bool:
     Determined by checking whether the alias's configured path lives inside
     DJ_LITE_TENANT["DIR"], rather than relying on a naming convention.
     """
+
     db_config = settings.DATABASES.get(alias)
 
     if db_config is None:
@@ -54,6 +56,7 @@ def get_tenant_db_path(tenant_pk: str) -> Path:
 
 def _build_tenant_db_config(db_path: Path) -> dict:
     """Build a DATABASES entry for a user DB using dj-lite with custom backend override."""
+
     options = get_conf("TENANT_SETTINGS")
     db_dir = db_path.parent
     file_name = db_path.name
@@ -74,6 +77,7 @@ def get_or_create_tenant_db(tenant_pk: str) -> bool:
     connection is available. Creates the DB file via migrations if it doesn't
     exist yet. Returns True if the DB is ready.
     """
+
     alias = get_tenant_db_alias(tenant_pk)
     db_path = get_tenant_db_path(tenant_pk)
 
@@ -91,12 +95,15 @@ def get_or_create_tenant_db(tenant_pk: str) -> bool:
 
 def _get_template_path() -> Path:
     """Return the path to the cached template database."""
+
     return Path(get_conf("DIR")) / ".template.sqlite3"
 
 
 def clear_template_cache() -> None:
     """Remove the cached template database if it exists."""
+
     template_path = _get_template_path()
+
     if template_path.exists():
         template_path.unlink()
         logger.debug("Cleared template cache at %s", template_path)
@@ -108,6 +115,7 @@ def setup_tenant_db(tenant_pk: str) -> bool:
     Called on first tenant creation (via signal) and by create_tenant_db command.
     If USE_DATABASE_TEMPLATE is True, copies from template if available.
     """
+
     alias = get_tenant_db_alias(tenant_pk)
     db_path = get_tenant_db_path(tenant_pk)
 
@@ -153,6 +161,7 @@ def setup_tenant_db(tenant_pk: str) -> bool:
 
 def close_tenant_db(tenant_pk: str) -> None:
     """Closes the connection and removes the alias from settings.DATABASES."""
+
     alias = get_tenant_db_alias(tenant_pk)
     connection_registry.remove(alias)
 
@@ -164,6 +173,7 @@ def close_tenant_db(tenant_pk: str) -> None:
 
 def delete_tenant_db(tenant_pk: str) -> bool:
     """Closes the connection and deletes the tenant's DB file from disk."""
+
     close_tenant_db(tenant_pk)
     db_path = get_tenant_db_path(tenant_pk)
 
@@ -177,6 +187,7 @@ def delete_tenant_db(tenant_pk: str) -> bool:
 
 def get_attach_statements() -> list[str]:
     """Generate ATTACH DATABASE SQL statements based on ATTACHMENTS config."""
+
     aliases = get_conf("ATTACHMENTS")
     statements = []
 
@@ -193,6 +204,7 @@ def attach_catalog_to_connection(connection) -> None:
     Runs ATTACH DATABASE on a newly opened user DB connection so that raw SQL
     can reference shared.tablename, and the ORM can use Meta.db_table = "shared.x".
     """
+
     with connection.cursor() as cursor:
         for stmt in get_attach_statements():
             cursor.execute(stmt)
