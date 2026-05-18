@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
 from django.utils.module_loading import import_string
+from typeguard import typechecked
 
 DEFAULTS = {
     "DIR": None,
@@ -26,6 +27,7 @@ DEFAULTS = {
 }
 
 
+@typechecked
 def is_tenant_app_or_model(app_label: str, model_name: str | None = None) -> bool:
     """Returns True if app_label or app_label.model_name is in DJ_LITE_TENANT['APPS']."""
 
@@ -40,7 +42,8 @@ def is_tenant_app_or_model(app_label: str, model_name: str | None = None) -> boo
     return False
 
 
-def get_conf(key):
+@typechecked
+def get_conf(key: str):
     """
     Returns the value for the given key from DJ_LITE_TENANT settings.
 
@@ -56,6 +59,7 @@ def get_conf(key):
     return value
 
 
+@typechecked
 def get_tenant_model() -> type[Model]:
     """
     Returns the tenant model class.
@@ -73,7 +77,8 @@ def get_tenant_model() -> type[Model]:
     return apps.get_model(value)
 
 
-def get_tenant_id_callable():
+@typechecked
+def get_tenant_id_callable() -> callable:
     """
     Returns the tenant-ID callable.
 

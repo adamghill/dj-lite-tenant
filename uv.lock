@@ -150,6 +150,7 @@ dependencies = [
     { name = "dj-lite" },
     { name = "django", version = "5.2.14", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "django", version = "6.0.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "typeguard" },
 ]
 
 [package.optional-dependencies]
@@ -170,6 +171,7 @@ requires-dist = [
     { name = "pytest-django", marker = "extra == 'dev'", specifier = ">=4.9" },
     { name = "pytest-mock", marker = "extra == 'dev'", specifier = ">=3.14" },
     { name = "ty", marker = "extra == 'dev'", specifier = ">=0.0.1" },
+    { name = "typeguard", specifier = ">=4.5.2" },
 ]
 provides-extras = ["dev"]
 
