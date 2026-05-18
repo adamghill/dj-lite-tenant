@@ -12,7 +12,7 @@ from dj_lite_tenant.signals import (  # noqa: F401
 
 class DjLiteTenantConfig(AppConfig):
     name = "dj_lite_tenant"
-    verbose_name = "dj-lite-tenant"
+    verbose_name = "dj_lite_tenant"
 
     def ready(self):
         tenant_model = get_tenant_model()
