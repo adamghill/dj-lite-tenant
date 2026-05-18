@@ -108,6 +108,9 @@ show_missing = true
 
 [tool.ty]
 
+[tool.ty.src]
+exclude = ["tests/**/*", "example/**/*"]
+
 [tool.ty.rules]
 unresolved-attribute = "ignore"
 invalid-type-form = "ignore"
