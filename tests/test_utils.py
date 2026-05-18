@@ -43,6 +43,7 @@ def test_setup_and_delete_tenant_db(allow_all_databases, testapp_migrations):
 
 def test_setup_tenant_db_keeps_alias_on_success(allow_all_databases, testapp_migrations):
     """After a successful setup, the alias must remain in DATABASES and the connection registry."""
+
     tenant_pk = "2002"
     alias = get_tenant_db_alias(tenant_pk)
 
@@ -84,6 +85,7 @@ def test_get_attach_statements_multiple_aliases():
 
 def test_build_tenant_db_config_uses_dj_lite():
     """Verify _build_tenant_db_config uses dj-lite with custom backend override."""
+
     from pathlib import Path
 
     db_path = Path("/tmp/test_users/user_123.sqlite3")
@@ -102,6 +104,7 @@ def test_build_tenant_db_config_uses_dj_lite():
 
 def test_get_template_path_returns_dot_template_sqlite3(monkeypatch, isolated_tenant_dir):
     """_get_template_path should return .template.sqlite3 in the tenant dir."""
+
     template_path = _get_template_path()
 
     assert template_path.name == ".template.sqlite3"
@@ -110,6 +113,7 @@ def test_get_template_path_returns_dot_template_sqlite3(monkeypatch, isolated_te
 
 def test_clear_template_cache_removes_file(isolated_tenant_dir):
     """clear_template_cache should remove the template file if it exists."""
+
     template_path = isolated_tenant_dir / ".template.sqlite3"
     template_path.touch()
 
@@ -122,6 +126,7 @@ def test_clear_template_cache_removes_file(isolated_tenant_dir):
 
 def test_clear_template_cache_noop_when_no_file(isolated_tenant_dir):
     """clear_template_cache should not raise when template file does not exist."""
+
     template_path = isolated_tenant_dir / ".template.sqlite3"
 
     assert not template_path.exists()
@@ -134,6 +139,7 @@ def test_setup_tenant_db_creates_template_when_cache_enabled(
     allow_all_databases, testapp_migrations, monkeypatch, isolated_tenant_dir
 ):
     """When USE_DATABASE_TEMPLATE is True, first setup creates a template file."""
+
     new_conf = {**settings.DJ_LITE_TENANT, "USE_DATABASE_TEMPLATE": True}
     monkeypatch.setattr(settings, "DJ_LITE_TENANT", new_conf)
 
@@ -154,6 +160,7 @@ def test_setup_tenant_db_uses_template_when_available(
     allow_all_databases, testapp_migrations, monkeypatch, isolated_tenant_dir
 ):
     """When template exists and USE_DATABASE_TEMPLATE is True, copy template instead of migrate."""
+
     new_conf = {**settings.DJ_LITE_TENANT, "USE_DATABASE_TEMPLATE": True}
     monkeypatch.setattr(settings, "DJ_LITE_TENANT", new_conf)
 
@@ -180,6 +187,7 @@ def test_setup_tenant_db_migrates_when_cache_disabled(
     allow_all_databases, testapp_migrations, monkeypatch, isolated_tenant_dir
 ):
     """When USE_DATABASE_TEMPLATE is False (default), always run migrations."""
+
     new_conf = {**settings.DJ_LITE_TENANT, "USE_DATABASE_TEMPLATE": False}
     monkeypatch.setattr(settings, "DJ_LITE_TENANT", new_conf)
 
@@ -198,6 +206,7 @@ def test_setup_tenant_db_falls_back_to_migrate_on_copy_failure(
     allow_all_databases, testapp_migrations, monkeypatch, isolated_tenant_dir
 ):
     """If template copy fails, fallback to running migrations."""
+
     new_conf = {**settings.DJ_LITE_TENANT, "USE_DATABASE_TEMPLATE": True}
     monkeypatch.setattr(settings, "DJ_LITE_TENANT", new_conf)
 

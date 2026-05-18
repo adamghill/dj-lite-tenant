@@ -5,6 +5,7 @@ from dj_lite_tenant.backends.sqlite3.operations import DatabaseOperations
 
 def _make_ops():
     connection = MagicMock()
+
     return DatabaseOperations(connection)
 
 

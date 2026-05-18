@@ -17,6 +17,7 @@ def test_is_tenant_model_false_for_auth():
 
 def test_db_for_read_tenant_model():
     router = TenantDatabaseRouter()
+
     with patch("dj_lite_tenant.routers.get_current_tenant_pk", return_value="5"):
         result = router.db_for_read(UserNote)
     assert result == "tenant_5"
@@ -24,6 +25,7 @@ def test_db_for_read_tenant_model():
 
 def test_db_for_read_no_tenant():
     router = TenantDatabaseRouter()
+
     with patch("dj_lite_tenant.routers.get_current_tenant_pk", return_value=None):
         result = router.db_for_read(UserNote)
     assert result is None
@@ -33,6 +35,7 @@ def test_db_for_read_non_tenant():
     from django.contrib.auth.models import User
 
     router = TenantDatabaseRouter()
+
     with patch("dj_lite_tenant.routers.get_current_tenant_pk", return_value="5"):
         result = router.db_for_read(User)
     assert result == "default"

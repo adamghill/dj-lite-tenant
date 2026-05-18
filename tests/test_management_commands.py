@@ -14,6 +14,7 @@ from django.core.management.base import CommandError
 @pytest.mark.django_db
 def test_create_tenant_db_unknown_user():
     """Raises CommandError when the user does not exist."""
+
     with pytest.raises(CommandError, match="does not exist"):
         call_command("create_tenant_db", "99999")
 
@@ -21,6 +22,7 @@ def test_create_tenant_db_unknown_user():
 @pytest.mark.django_db
 def test_create_tenant_db_success(allow_all_databases, testapp_migrations):
     """Creates and migrates a tenant DB for an existing user."""
+
     user = User.objects.create_user(username="cmd_user", password="pass")
 
     stdout = StringIO()
@@ -37,6 +39,7 @@ def test_create_tenant_db_success(allow_all_databases, testapp_migrations):
 @pytest.mark.django_db
 def test_create_tenant_db_setup_failure(allow_all_databases):
     """Raises CommandError when setup_tenant_db returns False."""
+
     user = User.objects.create_user(username="cmd_fail_user", password="pass")
 
     with patch("dj_lite_tenant.management.commands.create_tenant_db.setup_tenant_db", return_value=False):
@@ -51,6 +54,7 @@ def test_create_tenant_db_setup_failure(allow_all_databases):
 
 def test_migrate_tenant_dbs_dir_missing(tmp_path, monkeypatch):
     """Writes to stderr and returns early when DIR does not exist."""
+
     from django.conf import settings
 
     nonexistent = tmp_path / "no_such_dir"
@@ -64,6 +68,7 @@ def test_migrate_tenant_dbs_dir_missing(tmp_path, monkeypatch):
 
 def test_migrate_tenant_dbs_no_files(tmp_path, monkeypatch):
     """Reports no databases found when DIR is empty."""
+
     from django.conf import settings
 
     monkeypatch.setattr(settings, "DJ_LITE_TENANT", {**settings.DJ_LITE_TENANT, "DIR": tmp_path})
@@ -76,6 +81,7 @@ def test_migrate_tenant_dbs_no_files(tmp_path, monkeypatch):
 
 def test_migrate_tenant_dbs_ignores_non_matching_files(tmp_path, monkeypatch):
     """Files that don't match DB_NAME_PATTERN are ignored."""
+
     from django.conf import settings
 
     (tmp_path / "default.sqlite3").touch()
@@ -90,6 +96,7 @@ def test_migrate_tenant_dbs_ignores_non_matching_files(tmp_path, monkeypatch):
 
 def test_migrate_tenant_dbs_calls_setup_for_each_match(tmp_path, monkeypatch):
     """Calls setup_tenant_db for each matching file, reports ok/failed counts."""
+
     from django.conf import settings
 
     (tmp_path / "tenant_42.sqlite3").touch()
@@ -115,6 +122,7 @@ def test_migrate_tenant_dbs_calls_setup_for_each_match(tmp_path, monkeypatch):
 
 def test_migrate_tenant_dbs_reports_failures(tmp_path, monkeypatch):
     """Failed setups are counted and reported."""
+
     from django.conf import settings
 
     (tmp_path / "tenant_7.sqlite3").touch()
@@ -135,6 +143,7 @@ def test_migrate_tenant_dbs_reports_failures(tmp_path, monkeypatch):
 
 def test_migrate_tenant_dbs_custom_pattern(tmp_path, monkeypatch):
     """Regex is derived from DB_NAME_PATTERN, not hardcoded."""
+
     from django.conf import settings
 
     monkeypatch.setattr(
@@ -184,6 +193,7 @@ def test_build_tenant_db_re_captures_tenant_pk():
 
 def test_build_tenant_db_re_raises_when_tenant_pk_missing(monkeypatch):
     """Raises ImproperlyConfiguredError when DB_NAME_PATTERN lacks {tenant_pk}."""
+
     from django.conf import settings
     from django.core.exceptions import ImproperlyConfigured as ImproperlyConfiguredError
 

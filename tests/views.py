@@ -16,6 +16,7 @@ def notes_api(request):
     - GET: Reads UserNote from tenant DB, traverses FK to get user.username
     Returns JSON with counts and verifies cross-database FK traversal.
     """
+
     if request.method == "POST":
         data = json.loads(request.body)
         note = UserNote.objects.create(

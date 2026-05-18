@@ -9,6 +9,7 @@ from django.core.management import call_command
 
 def _create_note_and_verify(client, user, text, expected_user_count):
     """Helper: POST a note as user, then GET and verify isolation + FK traversal."""
+
     client.force_login(user)
 
     post_response = client.post(

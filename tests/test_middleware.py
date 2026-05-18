@@ -27,6 +27,7 @@ def test_middleware_sets_tenant_pk():
 
     def get_response(req):
         responses.append(get_current_tenant_pk())
+
         return MagicMock()
 
     with patch(_PATCH):
@@ -93,6 +94,7 @@ def test_get_tenant_pk_from_request_superuser_session():
 
 def test_middleware_custom_tenant_id_callable(monkeypatch):
     """Middleware delegates to a custom TENANT_ID_CALLABLE from settings."""
+
     from django.conf import settings
 
     captured = []
@@ -107,6 +109,7 @@ def test_middleware_custom_tenant_id_callable(monkeypatch):
 
     def get_response(req):
         captured.append(get_current_tenant_pk())
+
         return MagicMock()
 
     with patch(_PATCH):
@@ -132,6 +135,7 @@ def test_middleware_anonymous_user():
 
     def get_response(req):
         captured.append(get_current_tenant_pk())
+
         return MagicMock()
 
     with patch(_PATCH):

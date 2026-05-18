@@ -11,6 +11,7 @@ def _clear_registry():
 def test_touch_adds_alias():
     _clear_registry()
     connection_registry.touch("user_1")
+
     with connection_registry._lock:
         assert "user_1" in connection_registry._registry
 
@@ -20,6 +21,7 @@ def test_touch_moves_to_end():
     connection_registry.touch("user_1")
     connection_registry.touch("user_2")
     connection_registry.touch("user_1")
+
     with connection_registry._lock:
         keys = list(connection_registry._registry.keys())
     assert keys == ["user_2", "user_1"]
@@ -52,6 +54,7 @@ def test_evict_if_needed_no_eviction_when_under_limit():
 
 def test_evict_multiple():
     _clear_registry()
+
     for i in range(1, 6):
         connection_registry.touch(f"user_{i}")
 
@@ -66,6 +69,7 @@ def test_remove_clears_alias():
     _clear_registry()
     connection_registry.touch("user_1")
     connection_registry.remove("user_1")
+
     with connection_registry._lock:
         assert "user_1" not in connection_registry._registry
 
