@@ -161,6 +161,8 @@ DJ_LITE_TENANT = {
 
 An `"app_label.ModelName"` string identifying the model used as the tenant. Defaults to `None`, which uses Django's `get_user_model()`.
 
+> **Note:** Non-user-based tenants (e.g., Organizations where multiple users share a tenant DB, or Workspaces where a user can switch between tenant DBs) are possible via custom `TENANT_MODEL` and `TENANT_ID_CALLABLE`, but require you to implement the user-to-tenant resolution and access control logic yourself. The library provides the routing mechanism; the mapping layer is your application's responsibility.
+
 ### TENANT_ID_CALLABLE
 
 A dotted path to a `callable(request) -> str | None` that extracts the tenant identifier from the request. Defaults to `"dj_lite_tenant.middleware.get_tenant_pk_from_request"`.
