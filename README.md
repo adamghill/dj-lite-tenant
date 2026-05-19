@@ -76,6 +76,65 @@ DJ_LITE_TENANT = {
 }
 ```
 
+## How it works
+
+### Multi-tenant request flow
+
+Each authenticated user gets their own isolated SQLite file for the apps/models specified in the `APPS` setting. The middleware resolves the correct tenant on every request, the router directs ORM queries to the right file, and the LRU registry manages open connections.
+
+```mermaid
+sequenceDiagram
+    participant U42 as User 42
+    participant U99 as User 99
+    participant MW as Middleware
+    participant Router as DB Router
+    participant DB42 as tenant_42.sqlite3
+    participant DB99 as tenant_99.sqlite3
+    participant Shared as data.sqlite3<br/>(shared)
+
+    U42->>MW: GET /notes/
+    MW->>MW: ContextVar ← "42", open tenant DB
+    MW->>Router: Note.objects.all()
+    Router->>Router: read ContextVar → alias "tenant_42"
+    Router->>DB42: SELECT * FROM notes_note
+    DB42-->>U42: User 42's notes only
+
+    U99->>MW: GET /notes/
+    MW->>MW: ContextVar ← "99", open tenant DB
+    MW->>Router: Note.objects.all()
+    Router->>Router: read ContextVar → alias "tenant_99"
+    Router->>DB99: SELECT * FROM notes_note
+    DB99-->>U99: User 99's notes only
+
+    Note over DB42,Shared: ForeignKey traversal (note.user)
+    Router->>Router: User model → alias "default"
+    Router->>Shared: SELECT * FROM auth_user WHERE id=42
+    Shared-->>U42: User 42's profile
+```
+
+### Cross-database joins (ATTACH DATABASE)
+
+When a tenant model has a ForeignKey to a shared model (e.g. `Note.user → auth_user`), each shared database listed in `ATTACHMENTS` is ATTACHed to the tenant connection as a read-only alias. The custom SQLite backend rewrites dotted table names so the Django ORM generates valid cross-file SQL.
+
+```mermaid
+flowchart TD
+    A[New tenant DB connection opened] --> B["Signal: connection_created\n(attach_shared_databases)"]
+    B --> C["ATTACH DATABASE\n'file:data.sqlite3?mode=ro'\nAS 'shared'"]
+    C --> D[Tenant connection can now\nread shared DB tables]
+
+    E["ORM query: User model"] --> F["TenantDatabaseRouter\ndb_for_read(User) → 'default'"]
+    F --> G["Standard SELECT on shared DB\nno JOIN needed"]
+
+    H["ORM query with select_related:\nNote.objects.select_related('user')"] --> I["Custom backend quote_name\n'shared.auth_user' → 'shared'.'auth_user'"]
+    I --> J["SQLite resolves across\nATTACHed file boundary"]
+    J --> K["Single query result\n(notes + user rows)"]
+
+    D -.->|enables| J
+
+    style C fill:#f5f5f5,stroke:#999
+    style I fill:#f5f5f5,stroke:#999
+```
+
 ## Settings
 
 ### DIR
