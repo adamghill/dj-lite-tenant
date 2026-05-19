@@ -15,6 +15,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=9.0.0",
+    "pytest-benchmark>=5.0.0",
     "pytest-cov>=6.0.0",
     "pytest-django>=4.9",
     "pytest-mock>=3.14",
@@ -97,8 +98,10 @@ addopts = [
     "--failed-first",
     "--cov=dj_lite_tenant",
     "--cov-report=term-missing",
+    "--benchmark-disable",
 ]
 markers = [
+    "benchmark: microbenchmarks (run with --benchmark-only to enable)",
     "integration: end-to-end tests that exercise real Django migrate / DB flows",
     "slow: marks tests as slow",
 ]

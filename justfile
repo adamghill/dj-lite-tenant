@@ -27,6 +27,14 @@ dance:
   -uv run --all-extras example/manage.py makemigrations
   just migrate
 
+# Run only integration tests (concurrency, signals, management commands, etc.)
+test-integration:
+  uv run pytest -m integration --override-ini="addopts="
+
+# Run pytest-benchmark microbenchmarks
+benchmark:
+  uv run pytest tests/test_benchmarks.py --benchmark-only -v --override-ini="addopts="
+
 # Seed the example app with load-test users (run once before `locust`)
 locust-setup:
   uv run --all-extras locust/setup.py
