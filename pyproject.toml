@@ -20,6 +20,10 @@ dev = [
     "pytest-mock>=3.14",
     "ty>=0.0.1",
 ]
+load-test = [
+    "locust>=2.0",
+    "gunicorn>=23.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/adamghill/dj-lite-tenant"

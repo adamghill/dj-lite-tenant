@@ -23,6 +23,11 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "default.sqlite3",
+        # Force pytest-django/Django to use an on-disk test DB instead of the
+        # default in-memory shared-cache DB. Shared-cache uses table-level
+        # locking which causes "database table is locked" errors during the
+        # concurrency tests.
+        "TEST": {"NAME": str(BASE_DIR / "test_default.sqlite3")},
     }
 }
 

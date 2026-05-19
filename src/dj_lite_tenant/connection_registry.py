@@ -30,6 +30,13 @@ def remove(alias: str) -> None:
         _registry.pop(alias, None)
 
 
+def clear() -> None:
+    """Remove all aliases from the registry without closing connections."""
+
+    with _lock:
+        _registry.clear()
+
+
 def _close_alias(alias: str) -> None:
     from django.conf import settings  # noqa: PLC0415
     from django.db import connections  # noqa: PLC0415

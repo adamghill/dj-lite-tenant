@@ -168,6 +168,7 @@ def close_tenant_db(tenant_pk: str) -> None:
     if alias in connections:
         connections[alias].close()
         del connections[alias]
+
     settings.DATABASES.pop(alias, None)
 
 
@@ -186,7 +187,12 @@ def delete_tenant_db(tenant_pk: str) -> bool:
 
 
 def get_attach_statements() -> list[str]:
-    """Generate ATTACH DATABASE SQL statements based on ATTACHMENTS config."""
+    """
+    Generate ATTACH DATABASE SQL statements (https://sqlite.org/lang_attach.html) based on ATTACHMENTS config.
+
+    - Attachments are opened in read-only mode to prevent write conflicts.
+    - Restricted by SQLite's SQLITE_LIMIT_ATTACHED configuration (default 10).
+    """
 
     aliases = get_conf("ATTACHMENTS")
     statements = []
@@ -194,7 +200,12 @@ def get_attach_statements() -> list[str]:
     for db_alias, attach_name in aliases.items():
         db_path = str(settings.DATABASES[db_alias]["NAME"]).replace("'", "''")
         safe_name = attach_name.replace('"', '""')
-        statements.append(f"ATTACH DATABASE 'file:{db_path}?mode=ro' AS \"{safe_name}\"")
+        if db_path.startswith("file:"):
+            # Already a SQLite URI (e.g. in-memory shared-cache during tests);
+            # ATTACH it as-is — adding mode=ro would conflict with mode=memory.
+            statements.append(f"ATTACH DATABASE '{db_path}' AS \"{safe_name}\"")
+        else:
+            statements.append(f"ATTACH DATABASE 'file:{db_path}?mode=ro' AS \"{safe_name}\"")
 
     return statements
 
