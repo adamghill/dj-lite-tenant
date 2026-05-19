@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0-dev
+## 0.2.0
 
 - Shared databases now attach correctly when using in-memory SQLite (e.g. during tests)
 - Improved runtime error messages for misconfigured settings via `typeguard`

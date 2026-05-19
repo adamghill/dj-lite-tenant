@@ -1,6 +1,6 @@
 [project]
 name = "dj-lite-tenant"
-version = "0.1.0"
+version = "0.2.0"
 description = "Multi-tenant SQLite databases for Django."
 authors = [{name = "Adam Hill"}]
 license = {text = "MIT"}
