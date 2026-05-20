@@ -1,3 +1,4 @@
+# ruff: noqa: S311
 """
 Locust load-test for dj-lite-tenant example app.
 

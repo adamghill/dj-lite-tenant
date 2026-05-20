@@ -1,3 +1,4 @@
+# ruff: noqa: T201
 """
 Pre-flight setup script for the Locust load test.
 
